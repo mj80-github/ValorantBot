@@ -1,6 +1,6 @@
 package dev.mj80.valorant.valorantbot.discord;
 
-import dev.mj80.valorant.valorantcore.ValorantCore;
+import dev.mj80.valorant.valorantbot.ValorantBot;
 import dev.mj80.valorant.valorantcore.messages.Messages;
 import dev.mj80.valorant.valorantcore.util.TextUtils;
 import net.dv8tion.jda.api.entities.Member;
@@ -20,7 +20,7 @@ import java.util.Objects;
 public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        Server server = ValorantCore.getInstance().getServer();
+        Server server = ValorantBot.getInstance().getServer();
         if(event.getChannel().getIdLong() == 1053811114934288425L) {
             if(!event.getAuthor().isBot()) {
                 String message = event.getMessage().getContentDisplay().startsWith("> say ")
@@ -34,7 +34,7 @@ public class MessageListener extends ListenerAdapter {
                             ), message)));
                 } else {
                     String command = message.replace("> ", "");
-                    server.getScheduler().runTask(ValorantCore.getInstance(), () -> server.dispatchCommand(server.getConsoleSender(), command));
+                    server.getScheduler().runTask(ValorantBot.getInstance(), () -> server.dispatchCommand(server.getConsoleSender(), command));
                     server.getOnlinePlayers().stream().filter(player -> player.hasPermission("fpscore.console")).forEach(staff ->
                             staff.sendMessage(String.format(Messages.Misc.DISCORD_CONSOLE_SENT.getMessage(), event.getAuthor().getName()+"#"+event.getAuthor().getDiscriminator(),
                                     command)));
@@ -57,17 +57,17 @@ public class MessageListener extends ListenerAdapter {
                         event.getHook().editOriginal("**ERROR** `Not an integer`").queue();
                         break;
                     }
-                    Player player = ValorantCore.getInstance().getBot().getLinkCode(code);
+                    Player player = ValorantBot.getInstance().getBot().getLinkCode(code);
                     Member member = event.getMember();
                     assert member != null;
                     if (player != null) {
                         player.sendMessage(Messages.Commands.LINK_LINKING.getMessage());
                         event.getHook().editOriginal("Linking to **" + player.getName() + "**... (`" + player.getUniqueId() + "`)").queue();
-                        ValorantCore.getInstance().getBot().removeLinkCode(code);
-                        File linkFile = new File(ValorantCore.getInstance().getDataFolder() + File.separator + player.getUniqueId() + File.separator + "discord.txt");
+                        ValorantBot.getInstance().getBot().removeLinkCode(code);
+                        File linkFile = new File(ValorantBot.getInstance().getDataFolder() + File.separator + player.getUniqueId() + File.separator + "discord.txt");
                         linkFile.mkdirs();
                         TextUtils.writeFile(linkFile, Objects.requireNonNull(member).getId());
-                        Scoreboard scoreboard = ValorantCore.getInstance().getServer().getScoreboardManager().getMainScoreboard();
+                        Scoreboard scoreboard = ValorantBot.getInstance().getServer().getScoreboardManager().getMainScoreboard();
                         Objective objective = scoreboard.getObjective("Team");
                         assert objective != null;
                         if (objective.getScore(player).getScore() == 1) {
