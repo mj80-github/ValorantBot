@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.github.mj80-github</groupId>
             <artifactId>ValorantCore</artifactId>
-            <version>c02d1454f0</version>
+            <version>main-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.dv8tion</groupId>
