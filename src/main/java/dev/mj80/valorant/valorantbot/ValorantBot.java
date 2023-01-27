@@ -1,6 +1,6 @@
 package dev.mj80.valorant.valorantbot;
 
-import dev.mj80.valorant.valorantcore.discord.Bot;
+import dev.mj80.valorant.valorantbot.discord.Bot;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
