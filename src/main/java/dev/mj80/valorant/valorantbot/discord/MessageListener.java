@@ -67,7 +67,12 @@ public class MessageListener extends ListenerAdapter {
                         event.getHook().editOriginal("Linking to **" + player.getName() + "**... (`" + player.getUniqueId() + "`)").queue();
                         ValorantBot.getInstance().getBot().removeLinkCode(code);
                         File linkFile = new File(ValorantBot.getInstance().getDataFolder() + File.separator + player.getUniqueId() + File.separator + "discord.txt");
-                        linkFile.mkdirs();
+                        try {
+                            linkFile.getParentFile().mkdirs();
+                            linkFile.createNewFile();
+                        } catch(Exception exception) {
+                            event.getHook().editOriginal("**ERROR** `THE SERVER ENCOUNTERED AN ERROR:`\n```"+exception+"```").queue();
+                        }
                         CoreUtils.writeFile(linkFile, Objects.requireNonNull(member).getId());
                         Scoreboard scoreboard = ValorantBot.getInstance().getServer().getScoreboardManager().getMainScoreboard();
                         Objective objective = scoreboard.getObjective("Team");

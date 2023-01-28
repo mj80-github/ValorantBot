@@ -32,7 +32,7 @@ public class CoreUtils {
         return ChatColor.translateAlternateColorCodes(codeChar, builder.toString());
     }
     public static void writeFile(File file, String string) {
-        file.mkdirs();
+        file.getParentFile().mkdirs();
         try {
             if (!file.createNewFile()) new FileWriter(file, false).close();
             FileWriter fileWriter = new FileWriter(file, false);
