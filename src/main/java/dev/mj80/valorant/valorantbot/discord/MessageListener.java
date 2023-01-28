@@ -80,7 +80,6 @@ public class MessageListener extends ListenerAdapter {
                         }
                         event.getHook().editOriginal("You are now linked to **" + player.getName() + "**! (`" + player.getUniqueId() + "`)").queue();
                         player.sendMessage(String.format(Messages.Commands.LINK_LINKED.getMessage(), member.getUser().getName() + "#" + member.getUser().getDiscriminator()));
-                        
                     } else {
                         event.getHook().editOriginal("**ERROR** `Invalid Code`").queue();
                     }
