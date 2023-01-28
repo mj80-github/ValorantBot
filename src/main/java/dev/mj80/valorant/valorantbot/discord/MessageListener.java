@@ -1,8 +1,7 @@
 package dev.mj80.valorant.valorantbot.discord;
 
+import dev.mj80.valorant.valorantbot.CoreUtils;
 import dev.mj80.valorant.valorantbot.ValorantBot;
-import dev.mj80.valorant.valorantcore.messages.Messages;
-import dev.mj80.valorant.valorantcore.util.TextUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,6 +17,11 @@ import java.io.File;
 import java.util.Objects;
 
 public class MessageListener extends ListenerAdapter {
+    private final String DISCORD_MINECRAFT_CHAT = "&#5865F2&lDISCORD &r%s&r: %s";
+    private final String DISCORD_CONSOLE_SENT = "<GREEN>&lCONSOLE <GRAY>%s has sent a command from discord: <DARKGREEN>%s";
+    private final String LINK_LINKING = "<GRAY>Attempting to link your Discord account...";
+    private final String LINK_LINKED = "<GRAY>You are now linked to &#5865F2%s<GRAY>.";
+    
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         Server server = ValorantBot.getInstance().getServer();
@@ -27,17 +31,15 @@ public class MessageListener extends ListenerAdapter {
                         ? event.getMessage().getContentDisplay().replaceFirst("> say ", "")
                         : event.getMessage().getContentDisplay();
                 if (message.startsWith("> say ") || !message.startsWith("> ")) {
-                    server.getOnlinePlayers().forEach(player -> player.sendMessage(String.format(Messages.Misc.DISCORD_MINECRAFT_CHAT.getMessage(),
-                            TextUtils.translateAlternateColorCodes('&',
-                                    "&#" + Integer.toHexString(Objects.requireNonNull(Objects.requireNonNull(event.getMember()).getColor()).getRGB()).substring(2)
-                                            + event.getAuthor().getName()
-                            ), message)));
+                    server.getOnlinePlayers().forEach(player -> player.sendMessage(CoreUtils.translateAlternateColorCodes('&', String.format(DISCORD_MINECRAFT_CHAT,
+                            "&#" + Integer.toHexString(Objects.requireNonNull(Objects.requireNonNull(event.getMember()).getColor()).getRGB()).substring(2)
+                                    + event.getAuthor().getName(), message))));
                 } else {
                     String command = message.replace("> ", "");
                     server.getScheduler().runTask(ValorantBot.getInstance(), () -> server.dispatchCommand(server.getConsoleSender(), command));
                     server.getOnlinePlayers().stream().filter(player -> player.hasPermission("fpscore.console")).forEach(staff ->
-                            staff.sendMessage(String.format(Messages.Misc.DISCORD_CONSOLE_SENT.getMessage(), event.getAuthor().getName()+"#"+event.getAuthor().getDiscriminator(),
-                                    command)));
+                            staff.sendMessage(CoreUtils.translateAlternateColorCodes('&',
+                                    String.format(DISCORD_CONSOLE_SENT, event.getAuthor().getName()+"#"+event.getAuthor().getDiscriminator(), command))));
                 }
             }
         }
@@ -61,12 +63,12 @@ public class MessageListener extends ListenerAdapter {
                     Member member = event.getMember();
                     assert member != null;
                     if (player != null) {
-                        player.sendMessage(Messages.Commands.LINK_LINKING.getMessage());
+                        player.sendMessage(CoreUtils.translateAlternateColorCodes('&', LINK_LINKING));
                         event.getHook().editOriginal("Linking to **" + player.getName() + "**... (`" + player.getUniqueId() + "`)").queue();
                         ValorantBot.getInstance().getBot().removeLinkCode(code);
                         File linkFile = new File(ValorantBot.getInstance().getDataFolder() + File.separator + player.getUniqueId() + File.separator + "discord.txt");
                         linkFile.mkdirs();
-                        TextUtils.writeFile(linkFile, Objects.requireNonNull(member).getId());
+                        CoreUtils.writeFile(linkFile, Objects.requireNonNull(member).getId());
                         Scoreboard scoreboard = ValorantBot.getInstance().getServer().getScoreboardManager().getMainScoreboard();
                         Objective objective = scoreboard.getObjective("Team");
                         assert objective != null;
@@ -79,7 +81,8 @@ public class MessageListener extends ListenerAdapter {
                                     Objects.requireNonNull(event.getGuild().getRoleById(1053548525524365355L))).queue();
                         }
                         event.getHook().editOriginal("You are now linked to **" + player.getName() + "**! (`" + player.getUniqueId() + "`)").queue();
-                        player.sendMessage(String.format(Messages.Commands.LINK_LINKED.getMessage(), member.getUser().getName() + "#" + member.getUser().getDiscriminator()));
+                        player.sendMessage(CoreUtils.translateAlternateColorCodes('&',
+                                String.format(LINK_LINKED, member.getUser().getName() + "#" + member.getUser().getDiscriminator())));
                     } else {
                         event.getHook().editOriginal("**ERROR** `Invalid Code`").queue();
                     }
