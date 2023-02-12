@@ -1,5 +1,6 @@
 package dev.mj80.valorant.valorantbot.discord;
 
+import dev.mj80.valorant.valorantbot.ValorantBot;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -7,8 +8,6 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.bukkit.entity.Player;
@@ -34,12 +33,7 @@ public class Bot {
                 .addEventListeners(new MessageListener())
                 .build();
         
-        jda.updateCommands().addCommands(
-                Commands.slash("link", "Links your Minecraft account to your Discord account.")
-                        .setGuildOnly(true)
-                        .addOption(OptionType.INTEGER, "code", "Link code from \"/link\" in-game.")
-        
-        ).queue();
+        jda.updateCommands().addCommands(ValorantBot.getInstance().getCommandManager().getCommandsData()).queue();
     }
     public short createLinkCode(Player player) {
         short code;
