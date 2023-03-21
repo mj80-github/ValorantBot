@@ -3,6 +3,7 @@ package dev.mj80.valorant.valorantbot.discord;
 import dev.mj80.valorant.valorantbot.CoreUtils;
 import dev.mj80.valorant.valorantbot.Messages;
 import dev.mj80.valorant.valorantbot.ValorantBot;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -10,6 +11,7 @@ import org.bukkit.Server;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class MessageListener extends ListenerAdapter {
     @Override
@@ -37,6 +39,14 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         ValorantBot.getInstance().getCommandManager().getCommands().stream().filter(command -> event.getName().equals(command.getCommandData().getName()))
-                .forEach(command -> command.run(event));
+                .forEach(command -> {
+                    long start = System.currentTimeMillis();
+                    User user = Objects.requireNonNull(event.getMember()).getUser();
+                    ValorantBot.getInstance().getLogger().log(Level.INFO, "Running command \"/"+event.getName()+"\" for "+ user.getName() + "#" +
+                            user.getDiscriminator() + " in #" + event.getChannel().getName()+"...");
+                    command.run(event);
+                    ValorantBot.getInstance().getLogger().log(Level.INFO, "Successfully ran command \"/"+event.getName()+"\" for "+ user.getName() +
+                            "#" + user.getDiscriminator() + " in #" + event.getChannel().getName()+"! Finished in "+(System.currentTimeMillis()-start)+" ms.");
+                });
     }
 }

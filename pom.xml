@@ -43,14 +43,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <outputDirectory>C:\Users\mojan\Documents\Desktop Files\FPS 1.19\plugins\</outputDirectory>
-                </configuration>
-            </plugin>
         </plugins>
 
         <resources>
@@ -98,6 +90,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.mj80-github</groupId>
+            <artifactId>ValorantData</artifactId>
+            <version>3a333e42ab</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

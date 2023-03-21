@@ -27,7 +27,7 @@ public class Bot {
         jda = JDABuilder.createDefault(token)
                 .enableIntents(EnumSet.allOf(GatewayIntent.class))
                 .setBulkDeleteSplittingEnabled(false)
-                .setActivity(Activity.playing("VALORANT in Minecraft"))
+                .setActivity(Activity.competing("VALORANT but Minecraft"))
                 .setStatus(OnlineStatus.ONLINE)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .addEventListeners(new MessageListener())

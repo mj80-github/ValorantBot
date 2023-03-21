@@ -6,6 +6,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Level;
+
 public final class ValorantBot extends JavaPlugin {
     @Getter private static ValorantBot instance;
     @Getter private Bot bot;
@@ -15,10 +17,16 @@ public final class ValorantBot extends JavaPlugin {
     public void onEnable() {
         instance = this;
         commandManager = new CommandManager();
+        getLogger().log(Level.INFO, "Starting bot...");
         bot = new Bot(Dotenv.configure().load().get("TOKEN"));
         bot.build();
+        getLogger().log(Level.INFO, "ValorantBot has been enabled.");
     }
     
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+        getLogger().log(Level.INFO, "Stopping bot...");
+        bot.getJda().shutdown();
+        getLogger().log(Level.INFO, "ValorantBot has been disabled.");
+    }
 }
