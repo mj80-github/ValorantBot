@@ -40,20 +40,16 @@ public class CoreUtils {
     }
     public static String readFile(File file) {
         try {
-            if (file.getParentFile().mkdirs()) {
-                ValorantBot.getInstance().getLogger().log(Level.INFO, "Created plugin folder.");
-            }
-            if (file.createNewFile()) {
-                ValorantBot.getInstance().getLogger().log(Level.INFO, "Created " + file.getName() + " in the plugin's folder.");
-            }
+            createFile(file);
             StringBuilder text = new StringBuilder();
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 text.append(scanner.nextLine());
+                if(scanner.hasNextLine()) text.append("\n");
             }
             if (text.toString().isBlank()) {
                 scanner.close();
-                return "null";
+                return "";
             }
             scanner.close();
             return text.toString();
@@ -62,17 +58,33 @@ public class CoreUtils {
             return "null";
         }
     }
+    public static void writeFile(String fileName, String string) {
+        writeFile(new File(ValorantBot.getInstance().getDataFolder() + File.separator + fileName), string);
+    }
     public static void writeFile(File file, String string) {
-        if(file.getParentFile().mkdirs()) {
-            ValorantBot.getInstance().getLogger().log(Level.INFO, "Created plugin folder.");
-        }
         try {
-            if (!file.createNewFile()) new FileWriter(file, false).close();
             FileWriter fileWriter = new FileWriter(file, false);
             fileWriter.write(string);
             fileWriter.close();
         } catch (IOException exception) {
             ValorantBot.getInstance().getLogger().log(Level.WARNING, exception.getMessage());
         }
+    }
+    
+    public static boolean createFile(File file) {
+        boolean created = false;
+        try {
+            if (file.getParentFile().mkdirs()) {
+                ValorantBot.getInstance().getLogger().log(Level.INFO, "Created plugin folder.");
+            }
+            if (file.createNewFile()) {
+                ValorantBot.getInstance().getLogger().log(Level.INFO, "Created " + file.getName() + " in the plugin's folder.");
+                created = true;
+            }
+        } catch(IOException exception) {
+            ValorantBot.getInstance().getLogger().log(Level.WARNING, exception.getMessage());
+            return false;
+        }
+        return created;
     }
 }

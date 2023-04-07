@@ -8,11 +8,10 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class AdminRole extends DiscordCommand {
-
     @Getter
     private final SlashCommandData commandData =
             Commands.slash("adminrole", "Used to declare the admin role")
@@ -23,7 +22,8 @@ public class AdminRole extends DiscordCommand {
         event.deferReply().setEphemeral(true).queue();
 
         String settingsFile = CoreUtils.readFile("settings.txt");
-        List<String> settings = Arrays.asList(settingsFile.split("\n"));
-        
+        ArrayList<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
+        CoreUtils.writeFile("settings.txt", settingsFile+"\nlfmaofaoaomlflf");
+        System.out.println(CoreUtils.readFile("settings.txt"));
     }
 }

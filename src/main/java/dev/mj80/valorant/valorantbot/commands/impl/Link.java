@@ -2,7 +2,6 @@ package dev.mj80.valorant.valorantbot.commands.impl;
 
 import dev.mj80.valorant.valorantbot.CoreUtils;
 import dev.mj80.valorant.valorantbot.Messages;
-import dev.mj80.valorant.valorantbot.ValorantBot;
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
 import dev.mj80.valorant.valorantdata.ValorantData;
 import lombok.Getter;
@@ -39,7 +38,7 @@ public class Link extends DiscordCommand {
             event.getHook().editOriginal("**ERROR** `Not an integer`").queue();
             return;
         }
-        Player player = ValorantBot.getInstance().getBot().getLinkCode(code);
+        Player player = instance.getBot().getLinkCode(code);
         Member member = event.getMember();
         assert member != null;
         if(player == null) {
@@ -48,9 +47,9 @@ public class Link extends DiscordCommand {
         }
         player.sendMessage(CoreUtils.translateAlternateColorCodes('&', Messages.LINK_LINKING.getMessage()));
         event.getHook().editOriginal("Linking to **" + player.getName() + "**... (`" + player.getUniqueId() + "`)").queue();
-        ValorantBot.getInstance().getBot().removeLinkCode(code);
+        instance.getBot().removeLinkCode(code);
         ValorantData.getInstance().getData(player).setDiscordId(member.getIdLong());
-        Scoreboard scoreboard = ValorantBot.getInstance().getServer().getScoreboardManager().getMainScoreboard();
+        Scoreboard scoreboard = instance.getServer().getScoreboardManager().getMainScoreboard();
         Objective objective = scoreboard.getObjective("Team");
         assert objective != null;
         if (objective.getScore(player).getScore() == 1) {
