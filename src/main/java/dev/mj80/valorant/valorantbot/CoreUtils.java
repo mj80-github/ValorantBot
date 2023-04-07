@@ -4,6 +4,8 @@ import net.md_5.bungee.api.ChatColor;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class CoreUtils {
     public static String translateAlternateColorCodes(char codeChar, String message) {
@@ -41,5 +43,18 @@ public class CoreUtils {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+    public static String readResource(String fileName) {
+        StringBuilder builder = new StringBuilder();
+        Scanner scanner = new Scanner(ValorantBot.getInstance().getResource(fileName), StandardCharsets.UTF_8.name());
+        while (scanner.hasNextLine()) {
+            builder.append(scanner.nextLine());
+        }
+        if (builder.toString().isBlank()) {
+            scanner.close();
+            return "null";
+        }
+        scanner.close();
+        return builder.toString();
     }
 }
