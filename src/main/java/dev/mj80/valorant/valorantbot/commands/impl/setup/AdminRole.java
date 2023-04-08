@@ -27,24 +27,21 @@ public class AdminRole extends DiscordCommand {
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();
         Member member = event.getMember();
-        assert member != null;
-        OptionMapping arg = event.getOption("role");
-        assert arg != null;
+        long role = event.getOption("role").getAsLong();
 
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
+
         String adminRole;
-        //settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().ifPresent(setting -> {
-        //    adminRole.set(setting.substring(setting.indexOf("=") + 2));
-        //});
         String setting = settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().orElse("");
+
         if(!setting.equals("")) {
             adminRole = setting.substring(setting.indexOf("=") + 2);
         } else {
             adminRole = "0";
         }
-        if (member.isOwner() || BotUtils.checkRole(Objects.requireNonNull(member), Long.valueOf(adminRole))) {
-            long role = arg.getAsLong();
+
+        if (member.isOwner() || BotUtils.checkRole(member, Long.valueOf(adminRole))) {
             if (CoreUtils.hasSetting(settings, "adminRole")) {
                 settings.set(settings.indexOf(setting), "adminRole = " + role);
             } else {
