@@ -100,7 +100,7 @@ public class CoreUtils {
         return created;
     }
 
-    public static boolean hasRoleSetting(List<String> settingsList, String setting) {
-        return settingsList.stream().anyMatch(line -> line.startsWith(setting + "Role"));
+    public static boolean hasSetting(List<String> settingsList, String setting) {
+        return settingsList.stream().anyMatch(line -> line.startsWith(setting));
     }
 }

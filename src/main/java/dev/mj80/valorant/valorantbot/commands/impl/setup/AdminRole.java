@@ -1,10 +1,12 @@
 package dev.mj80.valorant.valorantbot.commands.impl.setup;
 
+import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
 import dev.mj80.valorant.valorantbot.utils.BotUtils;
 import dev.mj80.valorant.valorantbot.utils.CoreUtils;
-import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
 import lombok.Getter;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -12,7 +14,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Objects;
 
 public class AdminRole extends DiscordCommand {
 
@@ -24,27 +26,30 @@ public class AdminRole extends DiscordCommand {
     @Override
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();
+        Member member = event.getMember();
+        assert member != null;
+        OptionMapping arg = event.getOption("role");
+        assert arg != null;
 
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
-
-        AtomicReference<String> adminRole = new AtomicReference<>("");
-        settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().ifPresent(setting -> {
-            adminRole.set(setting.substring(setting.indexOf("=") + 2));
-        });
-
-        if ((BotUtils.checkRole(event.getMember(), Long.valueOf(adminRole.get()), event.getGuild().getRoles()))) {
-
-            long role = event.getOption("role").getAsLong();
-
-            if (CoreUtils.hasRoleSetting(settings, "admin")) {
-                settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().ifPresent(setting -> {
-                    settings.set(settings.indexOf(setting), "adminRole = " + role);
-                });
+        String adminRole;
+        //settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().ifPresent(setting -> {
+        //    adminRole.set(setting.substring(setting.indexOf("=") + 2));
+        //});
+        String setting = settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().orElse("");
+        if(!setting.equals("")) {
+            adminRole = setting.substring(setting.indexOf("=") + 2);
+        } else {
+            adminRole = "0";
+        }
+        if (member.isOwner() || BotUtils.checkRole(Objects.requireNonNull(member), Long.valueOf(adminRole))) {
+            long role = arg.getAsLong();
+            if (CoreUtils.hasSetting(settings, "adminRole")) {
+                settings.set(settings.indexOf(setting), "adminRole = " + role);
             } else {
                 settings.add("adminRole = " + role);
             }
-
             CoreUtils.writeFileFromList("settings.txt", settings);
         }
 
