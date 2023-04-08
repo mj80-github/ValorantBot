@@ -1,5 +1,6 @@
-package dev.mj80.valorant.valorantbot;
+package dev.mj80.valorant.valorantbot.utils;
 
+import dev.mj80.valorant.valorantbot.ValorantBot;
 import net.md_5.bungee.api.ChatColor;
 
 import java.io.File;
@@ -45,8 +46,7 @@ public class CoreUtils {
             StringBuilder text = new StringBuilder();
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                text.append(scanner.nextLine());
-                if(scanner.hasNextLine()) text.append("\n");
+                text.append(scanner.nextLine()).append("\n");
             }
             if (text.toString().isBlank()) {
                 scanner.close();

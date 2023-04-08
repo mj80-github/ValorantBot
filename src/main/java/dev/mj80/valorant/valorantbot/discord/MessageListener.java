@@ -1,6 +1,6 @@
 package dev.mj80.valorant.valorantbot.discord;
 
-import dev.mj80.valorant.valorantbot.CoreUtils;
+import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import dev.mj80.valorant.valorantbot.Messages;
 import dev.mj80.valorant.valorantbot.ValorantBot;
 import net.dv8tion.jda.api.entities.User;
