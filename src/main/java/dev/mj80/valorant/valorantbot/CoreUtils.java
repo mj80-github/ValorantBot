@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ChatColor;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 
@@ -70,6 +71,16 @@ public class CoreUtils {
         } catch (IOException exception) {
             ValorantBot.getInstance().getLogger().log(Level.WARNING, exception.getMessage());
         }
+    }
+    public static void writeFileFromList(String fileName, List<String> list) {
+        writeFileFromList(new File(ValorantBot.getInstance().getDataFolder() + File.separator + fileName), list);
+    }
+    public static void writeFileFromList(File file, List<String> list) {
+        StringBuilder string = new StringBuilder();
+        for(String line : list) {
+            string.append(line).append("\n");
+        }
+        writeFile(file, string.toString());
     }
     
     public static boolean createFile(File file) {
