@@ -32,7 +32,6 @@ public class AdminRole extends DiscordCommand {
             Integer lineNum = 0;
             for (String line: settings) {
                 if (line.startsWith("adminRole")) {
-                    String oldSetting = line.substring(line.indexOf("=") + 2);
                     break;
                 }
                 lineNum++;
@@ -42,6 +41,6 @@ public class AdminRole extends DiscordCommand {
             settings.add("adminRole = " + role.toString());
         }
 
-        CoreUtils.writeFileFromList("setting.txt", settings);
+        CoreUtils.writeFileFromList("settings.txt", settings);
     }
 }
