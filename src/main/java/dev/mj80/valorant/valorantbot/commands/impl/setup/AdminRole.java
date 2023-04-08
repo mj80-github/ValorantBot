@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminRole extends DiscordCommand {
 
@@ -23,22 +24,22 @@ public class AdminRole extends DiscordCommand {
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();
 
-        Long role = event.getOption("role").getAsLong();
+        
+        if(event.getOption("role") == null) {
+            event.getHook().editOriginal("**ERROR** `Not an integer`").queue();
+            return;
+        }
+        long role = Objects.requireNonNull(event.getOption("role")).getAsLong();
 
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
         if (CoreUtils.hasRoleSetting(settings, "admin")) {
-            Integer lineNum = 0;
-            for (String line: settings) {
-                if (line.startsWith("adminRole")) {
-                    break;
-                }
-                lineNum++;
-            }
-            settings.set(lineNum, "adminRole = " + role.toString());
+            settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().ifPresent(setting -> {
+                settings.set(settings.indexOf(setting), "adminRole = " + role);
+            });
         } else {
-            settings.add("adminRole = " + role.toString());
+            settings.add("adminRole = " + role);
         }
 
         CoreUtils.writeFileFromList("settings.txt", settings);
