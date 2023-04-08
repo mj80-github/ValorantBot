@@ -62,6 +62,7 @@ public class CoreUtils {
         writeFile(new File(ValorantBot.getInstance().getDataFolder() + File.separator + fileName), string);
     }
     public static void writeFile(File file, String string) {
+        createFile(file);
         try {
             FileWriter fileWriter = new FileWriter(file, false);
             fileWriter.write(string);
