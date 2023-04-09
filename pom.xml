@@ -48,7 +48,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <outputDirectory>C:\Users\mojan\Documents\Desktop Files\FPS 1.19\plugins</outputDirectory>
+                    <outputDirectory>C:\Users\mbeli\OneDrive\Desktop\Valorant Bot Server\plugins</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.26</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
