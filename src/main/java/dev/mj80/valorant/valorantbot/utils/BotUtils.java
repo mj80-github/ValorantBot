@@ -18,7 +18,7 @@ public class BotUtils {
         String roleId;
 
         if (CoreUtils.hasSetting(settings, role + "Role")) {
-            String setting = String.valueOf(settings.stream().filter(line -> line.startsWith(role + "Role")).findFirst());
+            String setting = settings.stream().filter(line -> line.startsWith(role + "Role")).findFirst().orElse("");
             roleId = setting.substring(setting.indexOf("=") + 2);
         } else {
             roleId = "0";

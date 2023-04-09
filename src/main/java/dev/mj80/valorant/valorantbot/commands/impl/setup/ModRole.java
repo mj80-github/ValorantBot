@@ -31,7 +31,7 @@ public class ModRole extends DiscordCommand {
 
         if (BotUtils.checkRole(event.getMember(), "admin")) {
             if (CoreUtils.hasSetting(settings, "modRole")) {
-                String setting = String.valueOf(settings.stream().filter(line -> line.startsWith("modRole")).findFirst());
+                String setting = settings.stream().filter(line -> line.startsWith("modRole")).findFirst().orElse("");
                 settings.set(settings.indexOf(setting), "modRole = " + role);
             } else {
                 settings.add("modRole = " + role);

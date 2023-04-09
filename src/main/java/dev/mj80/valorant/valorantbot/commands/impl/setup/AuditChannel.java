@@ -23,17 +23,17 @@ public class AuditChannel extends DiscordCommand {
     @Override
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();
-        long role = event.getOption("channel").getAsLong();
+        long channel = event.getOption("channel").getAsLong();
 
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
         if (BotUtils.checkRole(event.getMember(), "admin")) {
             if (CoreUtils.hasSetting(settings, "auditLogChannel")) {
-                String setting = String.valueOf(settings.stream().filter(line -> line.startsWith("auditLogChannel")).findFirst());
-                settings.set(settings.indexOf(setting), "auditLogChannel = " + role);
+                String setting = settings.stream().filter(line -> line.startsWith("auditLogChannel")).findFirst().orElse("");
+                settings.set(settings.indexOf(setting), "auditLogChannel = " + channel);
             } else {
-                settings.add("auditLogChannel = " + role);
+                settings.add("auditLogChannel = " + channel);
             }
             CoreUtils.writeFileFromList("settings.txt", settings);
         }

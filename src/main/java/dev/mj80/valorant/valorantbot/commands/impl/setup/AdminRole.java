@@ -34,7 +34,7 @@ public class AdminRole extends DiscordCommand {
 
         if (member.isOwner() || BotUtils.checkRole(member, "admin")) {
             if (CoreUtils.hasSetting(settings, "adminRole")) {
-                String setting = String.valueOf(settings.stream().filter(line -> line.startsWith("adminRole")).findFirst());
+                String setting = settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().orElse("");
                 settings.set(settings.indexOf(setting), "adminRole = " + role);
             } else {
                 settings.add("adminRole = " + role);
