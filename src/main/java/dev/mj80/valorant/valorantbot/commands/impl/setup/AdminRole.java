@@ -32,17 +32,9 @@ public class AdminRole extends DiscordCommand {
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
-        String adminRole;
-        String setting = settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().orElse("");
-
-        if(!setting.equals("")) {
-            adminRole = setting.substring(setting.indexOf("=") + 2);
-        } else {
-            adminRole = "0";
-        }
-
-        if (member.isOwner() || BotUtils.checkRole(member, Long.valueOf(adminRole))) {
+        if (member.isOwner() || BotUtils.checkRole(member, "admin")) {
             if (CoreUtils.hasSetting(settings, "adminRole")) {
+                String setting = String.valueOf(settings.stream().filter(line -> line.startsWith("adminRole")).findFirst());
                 settings.set(settings.indexOf(setting), "adminRole = " + role);
             } else {
                 settings.add("adminRole = " + role);
