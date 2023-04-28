@@ -29,15 +29,21 @@ public class AuditChannel extends DiscordCommand {
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
         if (BotUtils.checkRole(event.getMember(), "admin")) {
-            if (CoreUtils.hasSetting(settings, "auditLogChannel")) {
-                String setting = settings.stream().filter(line -> line.startsWith("auditLogChannel")).findFirst().orElse("");
-                settings.set(settings.indexOf(setting), "auditLogChannel = " + channel);
-            } else {
-                settings.add("auditLogChannel = " + channel);
-            }
-            CoreUtils.writeFileFromList("settings.txt", settings);
-        }
+            if (BotUtils.checkChannel(event.getChannel(), "modCommand")) {
+                if (CoreUtils.hasSetting(settings, "auditLogChannel")) {
+                    String setting = settings.stream().filter(line -> line.startsWith("auditLogChannel")).findFirst().orElse("");
+                    settings.set(settings.indexOf(setting), "auditLogChannel = " + channel);
+                } else {
+                    settings.add("auditLogChannel = " + channel);
+                }
+                CoreUtils.writeFileFromList("settings.txt", settings);
 
-        event.getHook().deleteOriginal().queue();
+                event.getHook().editOriginal("Command was successfully run").queue();
+            } else {
+                event.getHook().editOriginal("Sorry, you can't use this command in this channel.").queue();
+            }
+        } else {
+            event.getHook().editOriginal("Sorry, you don't have permission to run this command.").queue();
+        }
     }
 }

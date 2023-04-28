@@ -32,16 +32,22 @@ public class AdminRole extends DiscordCommand {
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
-        if (member.isOwner() || BotUtils.checkRole(member, "admin")) {
-            if (CoreUtils.hasSetting(settings, "adminRole")) {
-                String setting = settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().orElse("");
-                settings.set(settings.indexOf(setting), "adminRole = " + role);
-            } else {
-                settings.add("adminRole = " + role);
-            }
-            CoreUtils.writeFileFromList("settings.txt", settings);
-        }
+        if ((member.isOwner()) || (BotUtils.checkRole(member, "admin"))) {
+            if (BotUtils.checkChannel(event.getChannel(), "modCommand")) {
+                if (CoreUtils.hasSetting(settings, "adminRole")) {
+                    String setting = settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().orElse("");
+                    settings.set(settings.indexOf(setting), "adminRole = " + role);
+                } else {
+                    settings.add("adminRole = " + role);
+                }
+                CoreUtils.writeFileFromList("settings.txt", settings);
 
-        event.getHook().deleteOriginal().queue();
+                event.getHook().editOriginal("Command was run successfully,").queue();
+            } else {
+                event.getHook().editOriginal("Sorry, you can't use this command in this channel.").queue();
+            }
+        } else {
+            event.getHook().editOriginal("Sorry, you don't have permission to run this command.").queue();
+        }
     }
 }

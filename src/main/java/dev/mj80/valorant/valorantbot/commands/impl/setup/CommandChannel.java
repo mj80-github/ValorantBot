@@ -29,15 +29,21 @@ public class CommandChannel extends DiscordCommand {
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
         if (BotUtils.checkRole(event.getMember(), "admin")) {
-            if (CoreUtils.hasSetting(settings, "botCommandChannel")) {
-                String setting = settings.stream().filter(line -> line.startsWith("botCommandChannel")).findFirst().orElse("");
-                settings.set(settings.indexOf(setting), "botCommandChannel = " + channel);
-            } else {
-                settings.add("botCommandChannel = " + channel);
-            }
-            CoreUtils.writeFileFromList("settings.txt", settings);
-        }
+            if (BotUtils.checkChannel(event.getChannel(), "modCommand")) {
+                if (CoreUtils.hasSetting(settings, "botCommandChannel")) {
+                    String setting = settings.stream().filter(line -> line.startsWith("botCommandChannel")).findFirst().orElse("");
+                    settings.set(settings.indexOf(setting), "botCommandChannel = " + channel);
+                } else {
+                    settings.add("botCommandChannel = " + channel);
+                }
+                CoreUtils.writeFileFromList("settings.txt", settings);
 
-        event.getHook().deleteOriginal().queue();
+                event.getHook().editOriginal("Command was run successfully,").queue();
+            } else {
+                event.getHook().editOriginal("Sorry, you can't use this command in this channel.").queue();
+            }
+        } else {
+            event.getHook().editOriginal("Sorry, you don't have permission to run this command.").queue();
+        }
     }
 }
