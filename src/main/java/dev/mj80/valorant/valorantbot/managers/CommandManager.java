@@ -17,7 +17,11 @@ public class CommandManager {
     public CommandManager() {
         commands.add(new Link());
         commands.add(new Stats());
+
+        //Help
         commands.add(new Help());
+
+        //Setup
         commands.add(new AdminRole());
         commands.add(new ModRole());
         commands.add(new AuditChannel());

@@ -4,6 +4,7 @@ import dev.mj80.valorant.valorantbot.ValorantBot;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,5 +45,18 @@ public class BotUtils {
         }
 
         return channelId.equals(correctChannelId);
+    }
+
+    public static void auditAction(String action, Channel channel, Member member) {
+        String settingsFile = CoreUtils.readFile("settings.txt");
+        List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
+
+        if (CoreUtils.hasSetting(settings, "auditLogChannel")) {
+            String auditChannel = settings.stream().filter(line -> line.startsWith("auditLogChannel")).findFirst().orElse("");
+            String auditChannelId = auditChannel.substring(auditChannel.indexOf("=") + 2);
+
+            ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessage("User " + member.getUser().getAsTag() + " used the command " + action + " in " + channel.getAsMention()).queue();
+            //ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessage("Jump link: " + link).queue();
+        }
     }
 }

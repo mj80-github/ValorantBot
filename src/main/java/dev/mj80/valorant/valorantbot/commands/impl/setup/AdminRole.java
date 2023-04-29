@@ -1,10 +1,15 @@
 package dev.mj80.valorant.valorantbot.commands.impl.setup;
 
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
+import dev.mj80.valorant.valorantbot.discord.Bot;
 import dev.mj80.valorant.valorantbot.utils.BotUtils;
 import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import lombok.Getter;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -41,6 +46,10 @@ public class AdminRole extends DiscordCommand {
                     settings.add("adminRole = " + role);
                 }
                 CoreUtils.writeFileFromList("settings.txt", settings);
+
+                BotUtils.auditAction("adminRole", event.getChannel(), member);
+
+                //Link code goes here
 
                 event.getHook().editOriginal("Command was run successfully,").queue();
             } else {
