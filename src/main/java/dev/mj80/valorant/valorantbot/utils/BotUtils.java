@@ -4,6 +4,7 @@ import dev.mj80.valorant.valorantbot.ValorantBot;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class BotUtils {
         return channelId.equals(correctChannelId);
     }
 
-    public static void auditAction(String action, Channel channel, Member member) {
+    public static void auditAction(String action, Channel channel, Member member, SlashCommandInteractionEvent event) {
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
@@ -56,7 +57,10 @@ public class BotUtils {
             String auditChannelId = auditChannel.substring(auditChannel.indexOf("=") + 2);
 
             ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessage("User " + member.getUser().getAsTag() + " used the command " + action + " in " + channel.getAsMention()).queue();
-            //ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessage("Jump link: " + link).queue();
+
+            event.getHook().retrieveOriginal().queue(message -> {
+                ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessage("Jump link: " + message.getJumpUrl()).queue();
+            });
         }
     }
 }
