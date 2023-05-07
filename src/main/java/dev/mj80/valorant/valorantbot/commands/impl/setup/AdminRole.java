@@ -47,7 +47,7 @@ public class AdminRole extends DiscordCommand {
                 }
                 CoreUtils.writeFileFromList("settings.txt", settings);
 
-                BotUtils.auditAction("adminRole", event.getChannel(), member, event);
+                BotUtils.auditSlashCommandAction("adminrole", event.getChannel(), member);
 
                 event.getHook().editOriginal("Command was run successfully,").queue();
             } else {

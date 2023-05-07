@@ -38,6 +38,8 @@ public class CommandChannel extends DiscordCommand {
                 }
                 CoreUtils.writeFileFromList("settings.txt", settings);
 
+                BotUtils.auditSlashCommandAction("commandchannel", event.getChannel(), event.getMember());
+
                 event.getHook().editOriginal("Command was run successfully,").queue();
             } else {
                 event.getHook().editOriginal("Sorry, you can't use this command in this channel.").queue();

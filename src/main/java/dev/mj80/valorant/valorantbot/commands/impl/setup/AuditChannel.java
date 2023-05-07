@@ -38,6 +38,8 @@ public class AuditChannel extends DiscordCommand {
                 }
                 CoreUtils.writeFileFromList("settings.txt", settings);
 
+                BotUtils.auditSlashCommandAction("auditchannel", event.getChannel(), event.getMember());
+
                 event.getHook().editOriginal("Command was successfully run").queue();
             } else {
                 event.getHook().editOriginal("Sorry, you can't use this command in this channel.").queue();
