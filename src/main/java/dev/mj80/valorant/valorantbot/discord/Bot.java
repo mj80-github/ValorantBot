@@ -30,7 +30,7 @@ public class Bot {
                 .setActivity(Activity.competing("VALORANT but Minecraft"))
                 .setStatus(OnlineStatus.ONLINE)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .addEventListeners(new MessageListener())
+                .addEventListeners(new MessageListener(), new ButtonListener())
                 .build();
         
         jda.updateCommands().addCommands(ValorantBot.getInstance().getCommandManager().getCommandsData()).queue();
