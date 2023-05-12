@@ -11,28 +11,27 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import java.util.ArrayList;
 
 public class CommandManager {
-    @Getter ArrayList<DiscordCommand> commands = new ArrayList<>();
-    
-    public CommandManager() {
-        commands.add(new Link());
-        commands.add(new Stats());
-
+    @Getter private static ArrayList<DiscordCommand> commands = new ArrayList<>() {{
+        add(new Link());
+        add(new Stats());
+        
         //Setup
-        commands.add(new AdminRole());
-        commands.add(new ModRole());
-        commands.add(new AuditChannel());
-        commands.add(new CommandChannel());
-        commands.add(new ModCommandChannel());
+        add(new AdminRole());
+        add(new ModRole());
+        add(new AuditChannel());
+        add(new CommandChannel());
+        add(new ModCommandChannel());
         
         
         //Help (KEEP AT BOTTOM)
-        commands.add(new Help());
-    }
-    public ArrayList<SlashCommandData> getCommandsData() {
-        ArrayList<SlashCommandData> data = new ArrayList<>();
+        add(new Help());
+    }};
+    @Getter private static ArrayList<SlashCommandData> commandsData = new ArrayList<>();
+    
+    
+    public CommandManager() {
         for(DiscordCommand command : commands) {
-            data.add(command.getCommandData());
+            commandsData.add(command.getCommandData());
         }
-        return data;
     }
 }

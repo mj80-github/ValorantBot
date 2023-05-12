@@ -1,7 +1,7 @@
 package dev.mj80.valorant.valorantbot.commands.impl.help;
 
-import dev.mj80.valorant.valorantbot.ValorantBot;
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
+import dev.mj80.valorant.valorantbot.managers.CommandManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -16,22 +16,23 @@ import java.util.Objects;
 public class Help extends DiscordCommand {
     public SlashCommandData getCommandData() {
         OptionData optionData = new OptionData(OptionType.STRING, "command", "The specific command", false);
-        for(SlashCommandData slashCommandData : ValorantBot.getInstance().getCommandManager().getCommandsData()) {
+        for(SlashCommandData slashCommandData : CommandManager.getCommandsData()) {
             String name = slashCommandData.getName();
-            optionData.addChoice(name, "Usage of /"+name+" command");
+            optionData.addChoice(name, name);
         }
+        optionData.addChoice("help", "help");
         return Commands.slash("help", "Help menu")
                 .addOptions(new OptionData(OptionType.STRING,"menu", "The menu of commands", false)
-                                .addChoice("Setup", "List of all Setup commands")
-                                .addChoice("Admin", "List of all Admin commands")
-                                .addChoice("Mod", "List of all Mod Commands")
-                                .addChoice("Member", "List of all Member Commands"),
+                                .addChoice("Setup", "setup")
+                                .addChoice("Admin", "admin")
+                                .addChoice("Mod", "mod")
+                                .addChoice("Member", "member"),
                         optionData);
     }
     @Override
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();
-
+        
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("Help Menu", null);
         embed.setColor(Color.red);
