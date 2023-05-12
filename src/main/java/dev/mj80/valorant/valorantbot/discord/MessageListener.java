@@ -17,7 +17,6 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         Server server = ValorantBot.getInstance().getServer();
-        event.getMessage().getJumpUrl();
         if(event.getChannel().getIdLong() == 1053811114934288425L) {
             if(!event.getAuthor().isBot()) {
                 String message = event.getMessage().getContentDisplay().startsWith("> say ")

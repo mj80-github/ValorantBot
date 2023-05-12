@@ -28,7 +28,7 @@ public class Bot {
                 .enableIntents(EnumSet.allOf(GatewayIntent.class))
                 .setBulkDeleteSplittingEnabled(false)
                 .setActivity(Activity.competing("VALORANT but Minecraft"))
-                .setStatus(OnlineStatus.OFFLINE)
+                .setStatus(OnlineStatus.ONLINE)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .addEventListeners(new MessageListener(), new ButtonListener())
                 .build();
