@@ -12,14 +12,10 @@ import java.util.ArrayList;
 
 public class CommandManager {
     @Getter ArrayList<DiscordCommand> commands = new ArrayList<>();
-    @Getter ArrayList<SlashCommandData> commandsData = new ArrayList<>();
     
     public CommandManager() {
         commands.add(new Link());
         commands.add(new Stats());
-
-        //Help
-        commands.add(new Help());
 
         //Setup
         commands.add(new AdminRole());
@@ -28,6 +24,15 @@ public class CommandManager {
         commands.add(new CommandChannel());
         commands.add(new ModCommandChannel());
         
-        commands.forEach(command -> commandsData.add(command.getCommandData()));
+        
+        //Help (KEEP AT BOTTOM)
+        commands.add(new Help());
+    }
+    public ArrayList<SlashCommandData> getCommandsData() {
+        ArrayList<SlashCommandData> data = new ArrayList<>();
+        for(DiscordCommand command : commands) {
+            data.add(command.getCommandData());
+        }
+        return data;
     }
 }
