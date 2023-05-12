@@ -1,33 +1,33 @@
 package dev.mj80.valorant.valorantbot.commands.impl.help;
 
+import dev.mj80.valorant.valorantbot.ValorantBot;
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
-import lombok.Getter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.awt.*;
 import java.util.Objects;
 
 public class Help extends DiscordCommand {
-    @Getter private final SlashCommandData commandData =
-            Commands.slash("help", "Help menu")
-            .addOptions(new OptionData(OptionType.STRING,"menu", "The menu of commands", false)
-                    .addChoice("Setup", "List of all Setup commands")
-                    .addChoice("Admin", "List of all Admin commands")
-                    .addChoice("Mod", "List of all Mod Commands")
-                    .addChoice("Member", "List of all Member Commands"),
-                    new OptionData(OptionType.STRING, "command", "The specific command", false)
-                            .addChoice("adminrole", "Usage of /adminrole command")
-                            .addChoice("auditchannel", "Usage of /auditchannel command")
-                            .addChoice("commandchannel", "Usage of /commandchannel command")
-                            .addChoice("modcommandchannel", "Usage of /modcommandchannel command")
-                            .addChoice("modrole", "Usage of /modrole command"));
+    public SlashCommandData getCommandData() {
+        OptionData optionData = new OptionData(OptionType.STRING, "command", "The specific command", false);
+        for(SlashCommandData slashCommandData : ValorantBot.getInstance().getCommandManager().getCommandsData()) {
+            String name = slashCommandData.getName();
+            optionData.addChoice(name, "Usage of /"+name+" command");
+        }
+        return Commands.slash("help", "Help menu")
+                .addOptions(new OptionData(OptionType.STRING,"menu", "The menu of commands", false)
+                                .addChoice("Setup", "List of all Setup commands")
+                                .addChoice("Admin", "List of all Admin commands")
+                                .addChoice("Mod", "List of all Mod Commands")
+                                .addChoice("Member", "List of all Member Commands"),
+                        optionData);
+    }
     @Override
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();

@@ -31,6 +31,7 @@ public class Link extends DiscordCommand {
             event.getHook().editOriginal("**ERROR** `No code specified`").queue();
             return;
         }
+        
         Short code;
         try {
             code = Objects.requireNonNull(event.getOption("code", OptionMapping::getAsInt)).shortValue();
