@@ -32,7 +32,7 @@ public class Help extends DiscordCommand {
     @Override
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();
-        
+
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("Help Menu", null);
         embed.setColor(Color.red);
