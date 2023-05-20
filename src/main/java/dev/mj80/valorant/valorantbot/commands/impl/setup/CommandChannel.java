@@ -29,7 +29,7 @@ public class CommandChannel extends DiscordCommand {
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
         if (BotUtils.checkRole(event.getMember(), "admin")) {
-            if (BotUtils.checkChannel(event.getChannel(), "modCommand")) {
+            if ((BotUtils.checkChannel(event.getChannel(), "modCommand")) || (event.getMember().isOwner())) {
                 if (CoreUtils.hasSetting(settings, "botCommandChannel")) {
                     String setting = settings.stream().filter(line -> line.startsWith("botCommandChannel")).findFirst().orElse("");
                     settings.set(settings.indexOf(setting), "botCommandChannel = " + channel);

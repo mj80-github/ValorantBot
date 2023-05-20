@@ -266,7 +266,5 @@ public class Help extends DiscordCommand {
                 }
             }
         }
-
-
     }
 }
