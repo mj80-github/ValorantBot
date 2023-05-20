@@ -3,6 +3,7 @@ package dev.mj80.valorant.valorantbot.managers;
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
 import dev.mj80.valorant.valorantbot.commands.impl.Link;
 import dev.mj80.valorant.valorantbot.commands.impl.Stats;
+import dev.mj80.valorant.valorantbot.commands.impl.admin.ListSettings;
 import dev.mj80.valorant.valorantbot.commands.impl.help.Help;
 import dev.mj80.valorant.valorantbot.commands.impl.setup.*;
 import lombok.Getter;
@@ -21,6 +22,9 @@ public class CommandManager {
         add(new AuditChannel());
         add(new CommandChannel());
         add(new ModCommandChannel());
+
+        //Admin
+        add(new ListSettings());
         
         
         //Help (KEEP AT BOTTOM)
