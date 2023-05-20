@@ -38,7 +38,7 @@ public class AdminRole extends DiscordCommand {
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
         if ((member.isOwner()) || (BotUtils.checkRole(member, "admin"))) {
-            if (BotUtils.checkChannel(event.getChannel(), "modCommand")) {
+            if ((BotUtils.checkChannel(event.getChannel(), "modCommand")) || (member.isOwner())) {
                 if (CoreUtils.hasSetting(settings, "adminRole")) {
                     String setting = settings.stream().filter(line -> line.startsWith("adminRole")).findFirst().orElse("");
                     settings.set(settings.indexOf(setting), "adminRole = " + role);
