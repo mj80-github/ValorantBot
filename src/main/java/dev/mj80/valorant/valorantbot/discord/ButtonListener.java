@@ -15,6 +15,7 @@ public class ButtonListener extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        event.deferReply().setEphemeral(true).queue();
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.red);
         embed.setAuthor(Objects.requireNonNull(event.getJDA().getUserById(1053787916347908136L)).getAsTag());
