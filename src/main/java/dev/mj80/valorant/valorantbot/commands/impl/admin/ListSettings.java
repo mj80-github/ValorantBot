@@ -1,6 +1,7 @@
 package dev.mj80.valorant.valorantbot.commands.impl.admin;
 
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
+import dev.mj80.valorant.valorantbot.utils.BotUtils;
 import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import lombok.Getter;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -36,21 +37,29 @@ public class ListSettings extends DiscordCommand {
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
-        for (String setting: settings) {
-            if (!Objects.equals(setting, "Settings")) {
-                String name = setting.substring(0, setting.indexOf("=") + 2);
-                Boolean checkForRole = setting.contains("Role");
-                String value = setting.substring(setting.indexOf("=") + 2);
+        if (BotUtils.checkRole(event.getMember(), "admin")) {
+            if (BotUtils.checkChannel(event.getChannel(), "modCommand")) {
+                for (String setting : settings) {
+                    if (!Objects.equals(setting, "Settings")) {
+                        String name = setting.substring(0, setting.indexOf("=") + 2);
+                        boolean checkForRole = setting.contains("Role");
+                        String value = setting.substring(setting.indexOf("=") + 2);
 
-                if (checkForRole) {
-                    stringBuilder.append(name).append(event.getJDA().getRoleById(value).getAsMention()).append("\n");
-                } else {
-                    stringBuilder.append(name).append(event.getJDA().getTextChannelById(value).getAsMention()).append("\n");
+                        if (checkForRole) {
+                            stringBuilder.append(name).append(event.getJDA().getRoleById(value).getAsMention()).append("\n");
+                        } else {
+                            stringBuilder.append(name).append(event.getJDA().getTextChannelById(value).getAsMention()).append("\n");
+                        }
+                    }
                 }
-            }
-        }
 
-        embed.addField("Settings List", String.valueOf(stringBuilder), false);
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
+                embed.addField("Settings List", String.valueOf(stringBuilder), false);
+                event.getHook().sendMessageEmbeds(embed.build()).queue();
+            } else {
+                event.getHook().editOriginal("Sorry, you can't use this command in this channel.").queue();
+            }
+        } else {
+            event.getHook().editOriginal("Sorry, you don't have permission to run this command.").queue();
+        }
     }
 }
