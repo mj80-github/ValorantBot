@@ -100,9 +100,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.mj80-github</groupId>
+            <groupId>com.github.mj80dev</groupId>
             <artifactId>ValorantData</artifactId>
-            <version>3a333e42ab</version>
+            <version>eed73cc5f4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
