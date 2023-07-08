@@ -49,7 +49,7 @@ public class Link extends DiscordCommand {
         player.sendMessage(CoreUtils.translateAlternateColorCodes('&', Messages.LINK_LINKING.getMessage()));
         event.getHook().editOriginal("Linking to **" + player.getName() + "**... (`" + player.getUniqueId() + "`)").queue();
         instance.getBot().removeLinkCode(code);
-        ValorantData.getInstance().getData(player).setDiscordId(member.getIdLong());
+        ValorantData.getInstance().getData(player).getStats().setDiscordId(member.getIdLong());
         Scoreboard scoreboard = instance.getServer().getScoreboardManager().getMainScoreboard();
         Objective objective = scoreboard.getObjective("Team");
         assert objective != null;

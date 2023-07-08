@@ -57,12 +57,6 @@ public class BotUtils {
             String auditChannelId = auditChannel.substring(auditChannel.indexOf("=") + 2);
 
             ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessage("User " + member.getUser().getAsTag() + " used the command " + slashCommand + " in " + channel.getAsMention()).queue();
-
-            /*
-            event.getHook().retrieveOriginal().queue(message -> {
-                ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessage("Jump link: " + message.getJumpUrl()).queue();
-            });
-            */
         }
     }
 }

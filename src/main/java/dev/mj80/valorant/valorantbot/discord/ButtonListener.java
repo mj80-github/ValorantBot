@@ -1,10 +1,19 @@
 package dev.mj80.valorant.valorantbot.discord;
 
+import dev.mj80.valorant.valorantbot.ValorantBot;
 import dev.mj80.valorant.valorantbot.utils.BotUtils;
+import dev.mj80.valorant.valorantdata.ValorantData;
+import dev.mj80.valorant.valorantdata.penalty.Penalty;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,15 +24,15 @@ public class ButtonListener extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        event.deferReply().setEphemeral(true).queue();
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.red);
-        embed.setAuthor(Objects.requireNonNull(event.getJDA().getUserById(1053787916347908136L)).getAsTag());
-        embed.setFooter("Created by: " + Objects.requireNonNull(event.getJDA().getUserById(440183270328762388L)).getAsTag());
+        embed.setAuthor(Objects.requireNonNull(event.getJDA().getUserById(1053787916347908136L)).getName());
+        embed.setFooter("Created by: " + Objects.requireNonNull(event.getJDA().getUserById(440183270328762388L)).getName());
         embed.setThumbnail(Objects.requireNonNull(event.getJDA().getUserById(1053787916347908136L)).getAvatarUrl());
 
         switch (event.getButton().getId()) {
             case "help-menu" -> {
+                event.deferReply().setEphemeral(true).queue();
                 if (BotUtils.checkRole(event.getMember(), "admin")) {
                     if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                         embed.addField("Main Menu", "This is the main menu of the /help command", false);
@@ -79,6 +88,7 @@ public class ButtonListener extends ListenerAdapter {
                 }
             }
             case "help-setup" -> {
+                event.deferReply().setEphemeral(true).queue();
                 if (BotUtils.checkRole(event.getMember(), "admin")) {
                     if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                         embed.setTitle("Setup Commands List", null);
@@ -108,6 +118,7 @@ public class ButtonListener extends ListenerAdapter {
                 }
             }
             case "help-admin" -> {
+                event.deferReply().setEphemeral(true).queue();
                 if (BotUtils.checkRole(event.getMember(), "admin")) {
                     if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                         embed.setTitle("Admin Commands List", null);
@@ -133,6 +144,7 @@ public class ButtonListener extends ListenerAdapter {
                 }
             }
             case "help-mod" -> {
+                event.deferReply().setEphemeral(true).queue();
                 if (BotUtils.checkRole(event.getMember(), "admin")) {
                     if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                         embed.setTitle("Mod Commands List", null);
@@ -176,6 +188,7 @@ public class ButtonListener extends ListenerAdapter {
                 }
             }
             case "help-member" -> {
+                event.deferReply().setEphemeral(true).queue();
                 if (BotUtils.checkRole(event.getMember(), "admin")) {
                     if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                         embed.setTitle("Mod Commands List", null);
@@ -232,6 +245,53 @@ public class ButtonListener extends ListenerAdapter {
                         event.getHook().sendMessage("Sorry, you can't use this command in this channel.").queue();
                     }
                 }
+            }
+            case "appeal-accept" -> {
+                event.deferReply().setEphemeral(true).queue();
+                event.getChannel().retrieveMessageById(event.getMessageId()).queue(p -> {
+                    String id = p.getEmbeds().get(0).getFields().get(0).getValue();
+                    String user = p.getEmbeds().get(0).getFields().get(2).getValue();
+
+                    embed.setFooter("Accepted by: " + event.getMember().getUser().getName());
+                    embed.setTitle("Appeal Accepted");
+
+                    Penalty penalty = ValorantData.getInstance().getPenaltyManager().getPenalties().stream().filter(penalties -> penalties.getPID() == Integer.valueOf(id)).findFirst().orElse(null);
+
+                    embed.addField("Original Penalty", "```yaml\nType: Type\nLength: Length\nReason: Reason\nID: " + id + "\n```", false);
+                    /* Remove comment when bot finalized
+                    //embed.addField("Original Penalty", "```yaml\nType: " + penalty.getPenaltyType() + "\nLength: " + penalty.getDuration() + "\nReason: " + penalty.getReason() + "\nID: " + id + "\n```", false);
+
+                    penalty.remove(event.getMember().getUser().getName());
+                    */
+
+                    Member member = ValorantBot.getInstance().getBot().getGuild().getMembersByName(user, false).stream().findFirst().orElse(null);
+                    member.getUser().openPrivateChannel()
+                            .flatMap(channel -> channel.sendMessageEmbeds(embed.build()))
+                            .queue();
+                });
+                event.getHook().sendMessage("Appeal was successfully accepted.").queue();
+            }
+            case "appeal-decline" -> {
+                event.deferReply().setEphemeral(true).queue();
+                event.getChannel().retrieveMessageById(event.getMessageId()).queue(p -> {
+                    String id = p.getEmbeds().get(0).getFields().get(0).getValue();
+                    String user = p.getEmbeds().get(0).getFields().get(2).getValue();
+
+                    embed.setFooter("Declined by: " + event.getMember().getUser().getName());
+                    embed.setTitle("Appeal Declined");
+
+                    Penalty penalty = ValorantData.getInstance().getPenaltyManager().getPenalties().stream().filter(penalties -> penalties.getPID() == Integer.valueOf(id)).findFirst().orElse(null);
+
+                    embed.addField("Original Penalty", "```yaml\nType: Type\nLength: Length\nReason: Reason\nID: " + id + "\n```", false);
+                    //Remove comment when bot finalized
+                    //embed.addField("Original Penalty", "```yaml\nType: " + penalty.getPenaltyType() + "\nLength: " + penalty.getDuration() + "\nReason: " + penalty.getReason() + "\nID: " + id + "\n```", false);
+
+                    Member member = ValorantBot.getInstance().getBot().getGuild().getMembersByName(user, false).stream().findFirst().orElse(null);
+                    member.getUser().openPrivateChannel()
+                            .flatMap(channel -> channel.sendMessageEmbeds(embed.build()))
+                            .queue();
+                });
+                event.getHook().sendMessage("Appeal was successfully declined.").queue();
             }
         }
     }
