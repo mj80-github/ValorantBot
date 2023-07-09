@@ -8,13 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.text.TextInput;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
-import net.dv8tion.jda.api.interactions.modals.Modal;
-import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -255,14 +249,13 @@ public class ButtonListener extends ListenerAdapter {
                     embed.setFooter("Accepted by: " + event.getMember().getUser().getName());
                     embed.setTitle("Appeal Accepted");
 
-                    Penalty penalty = ValorantData.getInstance().getPenaltyManager().getPenalties().stream().filter(penalties -> penalties.getPID() == Integer.valueOf(id)).findFirst().orElse(null);
+                    Penalty penalty = ValorantData.getInstance().getPenaltyManager().getPenalties().stream().filter(penalties -> penalties.getPID() == Integer.parseInt(id))
+                            .findFirst().orElse(null);
 
                     embed.addField("Original Penalty", "```yaml\nType: Type\nLength: Length\nReason: Reason\nID: " + id + "\n```", false);
-                    /* Remove comment when bot finalized
-                    //embed.addField("Original Penalty", "```yaml\nType: " + penalty.getPenaltyType() + "\nLength: " + penalty.getDuration() + "\nReason: " + penalty.getReason() + "\nID: " + id + "\n```", false);
+                    embed.addField("Original Penalty", "```yaml\nType: " + penalty.getPenaltyType() + "\nLength: " + penalty.getDuration() + "\nReason: " + penalty.getReason() + "\nID: " + id + "\n```", false);
 
                     penalty.remove(event.getMember().getUser().getName());
-                    */
 
                     Member member = ValorantBot.getInstance().getBot().getGuild().getMembersByName(user, false).stream().findFirst().orElse(null);
                     member.getUser().openPrivateChannel()

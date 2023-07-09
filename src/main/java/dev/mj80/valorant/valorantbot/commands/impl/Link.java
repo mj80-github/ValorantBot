@@ -1,8 +1,8 @@
 package dev.mj80.valorant.valorantbot.commands.impl;
 
-import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import dev.mj80.valorant.valorantbot.Messages;
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
+import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import dev.mj80.valorant.valorantdata.ValorantData;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;

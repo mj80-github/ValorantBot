@@ -1,8 +1,8 @@
 package dev.mj80.valorant.valorantbot.discord;
 
-import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import dev.mj80.valorant.valorantbot.Messages;
 import dev.mj80.valorant.valorantbot.ValorantBot;
+import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;

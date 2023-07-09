@@ -4,8 +4,6 @@ import dev.mj80.valorant.valorantbot.ValorantBot;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.Channel;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
 
 import java.util.ArrayList;
 import java.util.Arrays;

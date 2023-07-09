@@ -1,17 +1,11 @@
 package dev.mj80.valorant.valorantbot.commands.impl.setup;
 
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
-import dev.mj80.valorant.valorantbot.discord.Bot;
 import dev.mj80.valorant.valorantbot.utils.BotUtils;
 import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import lombok.Getter;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -19,7 +13,6 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class AdminRole extends DiscordCommand {
 

@@ -1,15 +1,12 @@
 package dev.mj80.valorant.valorantbot.discord;
 
-import dev.mj80.valorant.valorantbot.ValorantBot;
 import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import dev.mj80.valorant.valorantdata.ValorantData;
 import dev.mj80.valorant.valorantdata.penalty.Penalty;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import org.checkerframework.checker.units.qual.Length;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -17,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class ModalListener extends ListenerAdapter {
 
@@ -35,14 +33,36 @@ public class ModalListener extends ListenerAdapter {
         switch (event.getModalId()) {
             case "appeal-modal" -> {
                 String member = event.getMember().getUser().getName();
-
+                String id = event.getValue("appeal-id").getAsString();
+                if(Pattern.matches("^#?\\d+$", event.getValue("appeal-id").getAsString())) {
+                    id = id.replaceAll("#", "");
+                } else {
+                    event.getHook().sendMessage("Invalid punishment ID. Your ID should only be number.").setEphemeral(true).queue();
+                    break;
+                }
+                String finalId = id;
+                Penalty penalty = ValorantData.getInstance().getPenaltyManager().getPenalties().stream().filter(penalties -> penalties.getPID() == Integer.parseInt(finalId))
+                        .findFirst().orElse(null);
+                if(penalty == null || !penalty.getPlayerName().equalsIgnoreCase(event.getValue("appeal-name").getAsString())) {
+                    event.getHook().sendMessage("Your punishment ID does not exist or it does not match your username.").setEphemeral(true).queue();
+                    break;
+                }
+                if(penalty.getPenaltyType().isInstant()) {
+                    event.getHook().sendMessage("This penalty type cannot be appealed.").setEphemeral(true).queue();
+                    break;
+                }
+                if(!penalty.isActive()) {
+                    event.getHook().sendMessage("This penalty is expired.").setEphemeral(true).queue();
+                    break;
+                }
+ 
                 if (CoreUtils.hasSetting(settings, "appealChannel")) {
                     String appealChannel = settings.stream().filter(line -> line.startsWith("appealChannel")).findFirst().orElse("");
                     String appealChannelId = appealChannel.substring(appealChannel.indexOf("=") + 2);
 
                     embed.setTitle("New Appeal", null);
 
-                    embed.addField("ID", event.getValue("appeal-id").getAsString(), false);
+                    embed.addField("ID", id, false);
                     if (event.getValue("appeal-reason").getAsString().isBlank()) {
                         embed.addField("Reasoning", "No reasoning provided.", false);
                     } else {

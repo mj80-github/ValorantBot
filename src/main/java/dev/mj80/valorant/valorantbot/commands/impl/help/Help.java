@@ -3,7 +3,6 @@ package dev.mj80.valorant.valorantbot.commands.impl.help;
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
 import dev.mj80.valorant.valorantbot.managers.CommandManager;
 import dev.mj80.valorant.valorantbot.utils.BotUtils;
-import dev.mj80.valorant.valorantbot.utils.CoreUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -14,9 +13,6 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class Help extends DiscordCommand {
