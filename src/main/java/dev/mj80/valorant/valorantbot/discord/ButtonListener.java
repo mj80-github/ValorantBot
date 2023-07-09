@@ -8,7 +8,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -241,37 +247,45 @@ public class ButtonListener extends ListenerAdapter {
                 }
             }
             case "appeal-accept" -> {
-                event.deferReply().setEphemeral(true).queue();
+                event.deferReply().queue();
+
                 event.getChannel().retrieveMessageById(event.getMessageId()).queue(p -> {
                     String id = p.getEmbeds().get(0).getFields().get(0).getValue();
                     String user = p.getEmbeds().get(0).getFields().get(2).getValue();
 
                     embed.setFooter("Accepted by: " + event.getMember().getUser().getName());
                     embed.setTitle("Appeal Accepted");
+                    embed.setColor(Color.green);
 
-                    Penalty penalty = ValorantData.getInstance().getPenaltyManager().getPenalties().stream().filter(penalties -> penalties.getPID() == Integer.parseInt(id))
-                            .findFirst().orElse(null);
+                    Penalty penalty = ValorantData.getInstance().getPenaltyManager().getPenalties().stream().filter(penalties -> penalties.getPID() == Integer.valueOf(id)).findFirst().orElse(null);
 
                     embed.addField("Original Penalty", "```yaml\nType: Type\nLength: Length\nReason: Reason\nID: " + id + "\n```", false);
+                    /* Remove comment when bot finalized
                     embed.addField("Original Penalty", "```yaml\nType: " + penalty.getPenaltyType() + "\nLength: " + penalty.getDuration() + "\nReason: " + penalty.getReason() + "\nID: " + id + "\n```", false);
 
                     penalty.remove(event.getMember().getUser().getName());
+                    */
 
                     Member member = ValorantBot.getInstance().getBot().getGuild().getMembersByName(user, false).stream().findFirst().orElse(null);
                     member.getUser().openPrivateChannel()
                             .flatMap(channel -> channel.sendMessageEmbeds(embed.build()))
                             .queue();
+
+                    BotUtils.auditAction("Accepted an appeal", event.getChannel(), event.getMember());
+
+                    event.getMessage().delete().queue();
+                    event.getHook().editOriginalEmbeds(embed.build()).queue();
                 });
-                event.getHook().sendMessage("Appeal was successfully accepted.").queue();
             }
             case "appeal-decline" -> {
-                event.deferReply().setEphemeral(true).queue();
+                event.deferReply().queue();
                 event.getChannel().retrieveMessageById(event.getMessageId()).queue(p -> {
                     String id = p.getEmbeds().get(0).getFields().get(0).getValue();
                     String user = p.getEmbeds().get(0).getFields().get(2).getValue();
 
                     embed.setFooter("Declined by: " + event.getMember().getUser().getName());
                     embed.setTitle("Appeal Declined");
+                    embed.setColor(Color.red);
 
                     Penalty penalty = ValorantData.getInstance().getPenaltyManager().getPenalties().stream().filter(penalties -> penalties.getPID() == Integer.valueOf(id)).findFirst().orElse(null);
 
@@ -283,8 +297,12 @@ public class ButtonListener extends ListenerAdapter {
                     member.getUser().openPrivateChannel()
                             .flatMap(channel -> channel.sendMessageEmbeds(embed.build()))
                             .queue();
+
+                    BotUtils.auditAction("Declined an appeal", event.getChannel(), event.getMember());
+
+                    event.getMessage().delete().queue();
+                    event.getHook().editOriginalEmbeds(embed.build()).queue();
                 });
-                event.getHook().sendMessage("Appeal was successfully declined.").queue();
             }
         }
     }

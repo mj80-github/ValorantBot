@@ -38,7 +38,7 @@ public class ModCommandChannel extends DiscordCommand {
                 }
                 CoreUtils.writeFileFromList("settings.txt", settings);
 
-                BotUtils.auditSlashCommandAction("modcommandchannel", event.getChannel(), event.getMember());
+                BotUtils.auditAction("Updated Mod Command Channel", event.getChannel(), event.getMember());
 
                 event.getHook().editOriginal("Command was run successfully,").queue();
             } else {

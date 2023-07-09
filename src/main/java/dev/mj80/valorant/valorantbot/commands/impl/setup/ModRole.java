@@ -38,7 +38,7 @@ public class ModRole extends DiscordCommand {
                 }
                 CoreUtils.writeFileFromList("settings.txt", settings);
 
-                BotUtils.auditSlashCommandAction("modrole", event.getChannel(), event.getMember());
+                BotUtils.auditAction("Updated Mod Role", event.getChannel(), event.getMember());
 
                 event.getHook().editOriginal("Command was run successfully,").queue();
             } else {

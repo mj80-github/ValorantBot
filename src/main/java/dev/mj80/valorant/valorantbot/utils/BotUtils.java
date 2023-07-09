@@ -1,13 +1,16 @@
 package dev.mj80.valorant.valorantbot.utils;
 
 import dev.mj80.valorant.valorantbot.ValorantBot;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.Channel;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class BotUtils {
 
@@ -46,7 +49,7 @@ public class BotUtils {
         return channelId.equals(correctChannelId);
     }
 
-    public static void auditSlashCommandAction(String slashCommand, Channel channel, Member member) {
+    public static void auditAction(String action, Channel channel, Member member) {
         String settingsFile = CoreUtils.readFile("settings.txt");
         List<String> settings = new ArrayList<>(Arrays.asList(settingsFile.split("\n")));
 
@@ -54,7 +57,16 @@ public class BotUtils {
             String auditChannel = settings.stream().filter(line -> line.startsWith("auditLogChannel")).findFirst().orElse("");
             String auditChannelId = auditChannel.substring(auditChannel.indexOf("=") + 2);
 
-            ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessage("User " + member.getUser().getAsTag() + " used the command " + slashCommand + " in " + channel.getAsMention()).queue();
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("Action Audited", null);
+            embed.setColor(Color.red);
+            embed.setAuthor(Objects.requireNonNull(ValorantBot.getInstance().getBot().getJda().getUserById(1053787916347908136L)).getName());
+            embed.setFooter("Created by: " + Objects.requireNonNull(ValorantBot.getInstance().getBot().getJda().getUserById(440183270328762388L)).getName());
+            embed.setThumbnail(Objects.requireNonNull(ValorantBot.getInstance().getBot().getJda().getUserById(1053787916347908136L)).getAvatarUrl());
+
+            embed.addField("The following was completed:", "Action: " + action + "\nCompleted By: " + member.getUser().getAsMention() + "\nCompleted in: " + channel.getAsMention(), false);
+
+            ValorantBot.getInstance().getBot().getJda().getTextChannelById(auditChannelId).sendMessageEmbeds(embed.build()).queue();
         }
     }
 }

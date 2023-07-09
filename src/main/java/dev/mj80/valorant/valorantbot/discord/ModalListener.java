@@ -32,6 +32,8 @@ public class ModalListener extends ListenerAdapter {
 
         switch (event.getModalId()) {
             case "appeal-modal" -> {
+                embed.setColor(Color.orange);
+
                 String member = event.getMember().getUser().getName();
                 String id = event.getValue("appeal-id").getAsString();
                 if(Pattern.matches("^#?\\d+$", event.getValue("appeal-id").getAsString())) {
