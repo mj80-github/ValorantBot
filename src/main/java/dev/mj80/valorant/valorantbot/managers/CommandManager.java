@@ -6,6 +6,7 @@ import dev.mj80.valorant.valorantbot.commands.impl.Stats;
 import dev.mj80.valorant.valorantbot.commands.impl.member.Appeal;
 import dev.mj80.valorant.valorantbot.commands.impl.admin.ListSettings;
 import dev.mj80.valorant.valorantbot.commands.impl.help.Help;
+import dev.mj80.valorant.valorantbot.commands.impl.mod.History;
 import dev.mj80.valorant.valorantbot.commands.impl.setup.*;
 import lombok.Getter;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -29,6 +30,7 @@ public class CommandManager {
         add(new ListSettings());
 
         //Mod
+        add(new History());
 
         //Member
         add(new Appeal());
