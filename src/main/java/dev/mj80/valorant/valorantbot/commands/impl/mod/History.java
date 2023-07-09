@@ -2,6 +2,7 @@ package dev.mj80.valorant.valorantbot.commands.impl.mod;
 
 import dev.mj80.valorant.valorantbot.ValorantBot;
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
+import dev.mj80.valorant.valorantdata.DataUtils;
 import dev.mj80.valorant.valorantdata.ValorantData;
 import dev.mj80.valorant.valorantdata.data.StatData;
 import dev.mj80.valorant.valorantdata.penalty.Penalty;
@@ -22,30 +23,34 @@ public class History extends DiscordCommand {
     @Getter
     private final SlashCommandData commandData =
             Commands.slash("history", "Lists the punishment history of the specified player.")
-                    .addOption(OptionType.STRING, "Player-IGN", "The IGN of the player you would like to view the history for", true);
+                    .addOption(OptionType.STRING, "player", "The IGN of the player you would like to view the history for", true);
 
     @Override
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();
 
-        String ign = event.getOption("Player-IGN").getAsString();
+        String ign = event.getOption("player").getAsString();
 
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Penalties for " + ign, null);
         embed.setColor(Color.red);
         embed.setAuthor(Objects.requireNonNull(event.getJDA().getUserById(1053787916347908136L)).getName());
-        embed.setFooter("Created by: " + Objects.requireNonNull(event.getJDA().getUserById(440183270328762388L)).getName());
 
         StringBuilder stringBuilder = new StringBuilder();
 
         OfflinePlayer player = ValorantBot.getInstance().getServer().getOfflinePlayer(ign);
         StatData data = ValorantData.getInstance().getData(player).getStats();
         ArrayList<Penalty> penalties = data.getPenalties();
+        embed.setTitle("Penalties for " + penalties.get(0).getPlayerName(), null);
 
         for (Penalty penalty: penalties) {
-            stringBuilder.append(penalty).append("\n");
+            if (penalty.getDuration() <= 0) {
+                stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+            } else {
+                stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nDuration: ").append(DataUtils.timeLength(penalty.getDuration())).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+            }
         }
+
         embed.addField("Penalties", String.valueOf(stringBuilder), false);
-        event.replyEmbeds(embed.build());
+        event.getHook().sendMessageEmbeds(embed.build()).queue();
     }
 }
