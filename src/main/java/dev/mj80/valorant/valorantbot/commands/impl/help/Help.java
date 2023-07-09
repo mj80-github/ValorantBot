@@ -116,6 +116,7 @@ public class Help extends DiscordCommand {
                     embed.setTitle("Setup Commands List", null);
 
                     embed.addField("/adminrole", "Used to save the id of the admin role.", false);
+                    embed.addField("/appealchannel", "Used to save the id of the channel where the appeals will be sent.", false);
                     embed.addField("/auditchannel", "Used to save the id of the channel where command audits will be sent.", false);
                     embed.addField("/commandchannel", "Used to save the id of the channel where the member commands must be used.", false);
                     embed.addField("/modcommandchannel", "Used to save the id of the channel where the mod+ commands must be used.", false);
@@ -143,7 +144,7 @@ public class Help extends DiscordCommand {
                 if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                     embed.setTitle("Admin Commands List", null);
 
-                    embed.addField("WIP", "WIP", false);
+                    embed.addField("/listsettings", "Lists all of the ids of the saved channels/roles",false);
 
                     embed.addBlankField(false);
 
@@ -209,7 +210,7 @@ public class Help extends DiscordCommand {
                 if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                     embed.setTitle("Mod Commands List", null);
 
-                    embed.addField("WIP", "WIP", false);
+                    embed.addField("/appeal", "Appeal a punishment you have received.", false);
 
                     embed.addBlankField(false);
 
@@ -229,7 +230,7 @@ public class Help extends DiscordCommand {
                 if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                     embed.setTitle("Mod Commands List", null);
 
-                    embed.addField("WIP", "WIP", false);
+                    embed.addField("/appeal", "Appeal a punishment you have received.", false);
 
                     embed.addBlankField(false);
 
@@ -247,7 +248,7 @@ public class Help extends DiscordCommand {
                 if (BotUtils.checkChannel(event.getChannel(), "botCommand")) {
                     embed.setTitle("Member Commands List", null);
 
-                    embed.addField("WIP", "WIP", false);
+                    embed.addField("/appeal", "Appeal a punishment you have received.", false);
 
                     embed.addBlankField(false);
 

@@ -1,4 +1,4 @@
-package dev.mj80.valorant.valorantbot.commands.impl.admin;
+package dev.mj80.valorant.valorantbot.commands.impl.member;
 
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
 import lombok.Getter;
