@@ -23,7 +23,8 @@ public class History extends DiscordCommand {
     @Getter
     private final SlashCommandData commandData =
             Commands.slash("history", "Lists the punishment history of the specified player.")
-                    .addOption(OptionType.STRING, "player", "The IGN of the player you would like to view the history for", true);
+                    .addOption(OptionType.STRING, "player", "The IGN of the player you would like to view the history for", true)
+                    .addOption(OptionType.INTEGER, "id", "The specific ID of a punishment for this player.");
 
     @Override
     public void run(SlashCommandInteractionEvent event) {
@@ -38,19 +39,50 @@ public class History extends DiscordCommand {
         StringBuilder stringBuilder = new StringBuilder();
 
         OfflinePlayer player = ValorantBot.getInstance().getServer().getOfflinePlayer(ign);
+        if (!player.hasPlayedBefore()) {
+            event.getHook().editOriginal("No player by that name found.").queue();
+            return;
+        }
         StatData data = ValorantData.getInstance().getData(player).getStats();
         ArrayList<Penalty> penalties = data.getPenalties();
         embed.setTitle("Penalties for " + penalties.get(0).getPlayerName(), null);
 
-        for (Penalty penalty: penalties) {
-            if (penalty.getDuration() <= 0) {
-                stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+        try {
+            int pID = event.getOption("id").getAsInt();
+            Penalty penalty = Penalty.of(pID);
+
+            if (penalty.isActive()) {
+                if (penalty.getDuration() <= 0) {
+                    stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                } else {
+                    stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nDuration: ").append(DataUtils.timeLength(penalty.getDuration())).append("\nActive: ").append(penalty.isActive()).append("\nTime Left: ").append(DataUtils.timeUntil(penalty.getEnd())).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                }
             } else {
-                stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nDuration: ").append(DataUtils.timeLength(penalty.getDuration())).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                if (penalty.getDuration() <= 0) {
+                    stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                } else {
+                    stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nDuration: ").append(DataUtils.timeLength(penalty.getDuration())).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                }
+            }
+        } catch (Exception e) {
+            for (Penalty penalty: penalties) {
+                if (penalty.isActive()) {
+                    if (penalty.getDuration() <= 0) {
+                        stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                    } else {
+                        stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nDuration: ").append(DataUtils.timeLength(penalty.getDuration())).append("\nActive: ").append(penalty.isActive()).append("\nTime Left: ").append(DataUtils.timeUntil(penalty.getEnd())).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                    }
+                } else {
+                    if (penalty.getDuration() <= 0) {
+                        stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                    } else {
+                        stringBuilder.append("```yaml\nID: ").append(penalty.getPID()).append("\nType: ").append(penalty.getPenaltyType()).append("\nDuration: ").append(DataUtils.timeLength(penalty.getDuration())).append("\nActive: ").append(penalty.isActive()).append("\nPenalized by: ").append(penalty.getStaffName()).append("\n```").append("\n");
+                    }
+                }
             }
         }
 
-        embed.addField("Penalties", String.valueOf(stringBuilder), false);
+        embed.addField("Penalties:", String.valueOf(stringBuilder), false);
         event.getHook().sendMessageEmbeds(embed.build()).queue();
     }
 }
