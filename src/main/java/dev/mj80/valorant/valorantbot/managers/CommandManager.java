@@ -6,6 +6,7 @@ import dev.mj80.valorant.valorantbot.commands.impl.Stats;
 import dev.mj80.valorant.valorantbot.commands.impl.member.Appeal;
 import dev.mj80.valorant.valorantbot.commands.impl.admin.ListSettings;
 import dev.mj80.valorant.valorantbot.commands.impl.help.Help;
+import dev.mj80.valorant.valorantbot.commands.impl.mod.BanMember;
 import dev.mj80.valorant.valorantbot.commands.impl.mod.History;
 import dev.mj80.valorant.valorantbot.commands.impl.setup.*;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class CommandManager {
 
         //Mod
         add(new History());
+        add(new BanMember());
 
         //Member
         add(new Appeal());

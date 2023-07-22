@@ -1,9 +1,11 @@
 package dev.mj80.valorant.valorantbot.commands.impl;
 
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
+import dev.mj80.valorant.valorantdata.DataUtils;
 import dev.mj80.valorant.valorantdata.ValorantData;
 import dev.mj80.valorant.valorantdata.data.StatData;
 import lombok.Getter;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -11,6 +13,8 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.bukkit.OfflinePlayer;
 
+import java.awt.*;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -19,20 +23,16 @@ public class Stats extends DiscordCommand {
     private final SlashCommandData commandData =
             Commands.slash("stats", "Looks up a player's stats.")
                     .setGuildOnly(true)
-                    .addOption(OptionType.STRING, "player", "A username or UUID.");
+                    .addOption(OptionType.STRING, "player", "A username or UUID.", true);
     
     
     @Override
     public void run(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
-        String input = event.getOption("player", OptionMapping::getAsString);
+        event.deferReply().setEphemeral(true).queue();
+        String input = event.getOption("player").getAsString();
         // run asynchronously since getOfflinePlayer usually takes a few seconds
         scheduler.runTaskAsynchronously(instance, () -> {
             OfflinePlayer player;
-            if(input == null) {
-                event.getHook().editOriginal("**ERROR** `NO NAME PROVIDED`").queue();
-                return;
-            }
             if(Pattern.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", input)) {
                 // UUID (e.g. 20210975-26f1-470c-b7e4-c52e3bed2222)
                 player = instance.getServer().getOfflinePlayer(UUID.fromString(input));
@@ -52,19 +52,28 @@ public class Stats extends DiscordCommand {
                 event.getHook().editOriginal("**ERROR** `UNKNOWN PLAYER`").queue();
                 return;
             }
-            event.getHook().editOriginal("**Fetching player** `"+player.getName()+"`**'s stats...**").queue();
+
             StatData stats = ValorantData.getInstance().getData(player).getStats();
-            /*
-             TODO get stats and send in embed
-              - ADR
-              - KD
-              - Win%
-              - total wins
-              - total kills
-              - total deaths
-              - total assists
-              - damage delta ((damageDealt - damageReceived) / roundsPlayed)
-             */
+
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("Stats for " + player.getName(), null);
+            embed.setColor(Color.red);
+            embed.setAuthor(Objects.requireNonNull(event.getJDA().getUserById(1053787916347908136L)).getName());
+            embed.setFooter("Created by: " + Objects.requireNonNull(event.getJDA().getUserById(440183270328762388L)).getName());
+            embed.setThumbnail(Objects.requireNonNull(event.getJDA().getUserById(1053787916347908136L)).getAvatarUrl());
+
+            embed.addField("Stats: ", "```yaml" +
+                    "\nKDR: " + DataUtils.round((float)stats.getKills()/stats.getDeaths(), 2) +
+                    "\nADR: " + DataUtils.round((float)stats.getDamageDealt()/stats.getRoundsPlayed(), 2) +
+                    "\nTotal Wins: " + stats.getVictories() +
+                    "\nWins %: " + DataUtils.round((float)stats.getVictories()/stats.getMatchesPlayed(), 2) * 100 +
+                    "\nTotal Kills: " + stats.getKills() +
+                    "\nTotal Deaths: " + stats.getDeaths() +
+                    "\nTotal Assists: " + stats.getAssists() +
+                    "\nDamage Delta: " + DataUtils.round((float)(stats.getDamageDealt() - stats.getDamageReceived())/stats.getRoundsPlayed(), 2) +
+                    "\n```", false);
+
+            event.getHook().sendMessageEmbeds(embed.build()).queue();
         });
     }
 }
