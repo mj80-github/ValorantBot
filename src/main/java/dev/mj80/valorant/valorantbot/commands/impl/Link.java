@@ -1,8 +1,10 @@
 package dev.mj80.valorant.valorantbot.commands.impl;
 
+import com.google.gson.JsonObject;
 import dev.mj80.valorant.valorantbot.Messages;
 import dev.mj80.valorant.valorantbot.commands.DiscordCommand;
 import dev.mj80.valorant.valorantbot.utils.CoreUtils;
+import dev.mj80.valorant.valorantdata.DataUtils;
 import dev.mj80.valorant.valorantdata.ValorantData;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.io.File;
 import java.util.Objects;
 
 public class Link extends DiscordCommand {
@@ -52,16 +55,26 @@ public class Link extends DiscordCommand {
         ValorantData.getInstance().getData(player).getStats().setDiscordId(member.getIdLong());
         Scoreboard scoreboard = instance.getServer().getScoreboardManager().getMainScoreboard();
         Objective objective = scoreboard.getObjective("Team");
-        assert objective != null;
-        if (objective.getScore(player).getScore() == 1) {
-            Objects.requireNonNull(event.getGuild()).addRoleToMember(Objects.requireNonNull(member),
-                    Objects.requireNonNull(event.getGuild().getRoleById(1053548525524365355L))).queue();
-        }
-        if (objective.getScore(player).getScore() == 2) {
-            Objects.requireNonNull(event.getGuild()).addRoleToMember(Objects.requireNonNull(member),
-                    Objects.requireNonNull(event.getGuild().getRoleById(1053548525524365355L))).queue();
+        if(objective != null) {
+            if (objective.getScore(player).getScore() == 1) {
+                Objects.requireNonNull(event.getGuild()).addRoleToMember(Objects.requireNonNull(member),
+                        Objects.requireNonNull(event.getGuild().getRoleById(1053548525524365355L))).queue();
+            }
+            if (objective.getScore(player).getScore() == 2) {
+                Objects.requireNonNull(event.getGuild()).addRoleToMember(Objects.requireNonNull(member),
+                        Objects.requireNonNull(event.getGuild().getRoleById(1053548525524365355L))).queue();
+            }
         }
         ValorantData.getInstance().getData(player).saveData();
+        
+        JsonObject discordData = new JsonObject();
+        discordData.addProperty("link-uuid", player.getUniqueId().toString());
+        
+        
+        File file = new File(ValorantData.getInstance().getDataFolder().getAbsolutePath() + File.separator + "discord" + File.separator + member.getId() + ".json");
+        DataUtils.createFile(file);
+        DataUtils.writeJSONObject(file, discordData);
+        
         event.getHook().editOriginal("You are now linked to **" + player.getName() + "**! (`" + player.getUniqueId() + "`)").queue();
         player.sendMessage(CoreUtils.translateAlternateColorCodes('&',
                 Messages.LINK_LINKED.getMessage(member.getUser().getName() + "#" + member.getUser().getDiscriminator())));

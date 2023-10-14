@@ -22,13 +22,13 @@ public class History extends DiscordCommand {
     @Getter
     private final SlashCommandData commandData =
             Commands.slash("history", "Lists the punishment history of the specified player.")
-                    .addOption(OptionType.STRING, "Player-IGN", "The IGN of the player you would like to view the history for", true);
+                    .addOption(OptionType.STRING, "player", "The IGN of the player you would like to view the history for", true);
 
     @Override
     public void run(SlashCommandInteractionEvent event) {
         event.deferReply().setEphemeral(true).queue();
 
-        String ign = event.getOption("Player-IGN").getAsString();
+        String ign = event.getOption("player").getAsString();
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("Penalties for " + ign, null);
