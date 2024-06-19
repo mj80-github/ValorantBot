@@ -1,5 +1,5 @@
 name: ValorantBot
 version: '${project.version}'
-main: dev.mj80.valorant.valorantbot.ValorantBot
-api-version: 1.19
-authors: [ mj80, TotallyTrying ]
+main: dev.cognitivity.valorant.valorantbot.ValorantBot
+api-version: 1.21
+authors: [ cognitivity ]
